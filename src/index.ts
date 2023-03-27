@@ -4,12 +4,12 @@ import { readFileSync } from "fs";
 import { createServer } from "https";
 import { Socket } from "net";
 import cors from "cors";
-import dotenv from "dotenv";
+import config from "config";
 import { connect } from "mongoose";
 
 import AppRoutes from "./routes/v1/app.routes";
 
-dotenv.config();
+//dotenv.config();
 
 class App {
   public app = express();
@@ -39,7 +39,7 @@ class App {
       },
       this.app
     )
-      .listen(process.env.PORT, async () => {
+      .listen(config.get("PORT"), async () => {
         const db = await this.connectedToDatabase();
         //console.log(db);
       })
@@ -49,11 +49,10 @@ class App {
   }
 
   private async connectedToDatabase() {
-    const db = await connect(`${process.env.MONGO_URL}`, {
+    const db = await connect(`${config.get("MONGO_URL")}`, {
       //@ts-ignore
       useUnifiedTopology: true,
       autoIndex: true,
-      dbName: "app",
     });
     return db;
   }
